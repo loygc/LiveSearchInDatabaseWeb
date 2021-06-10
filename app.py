@@ -25,7 +25,6 @@ def livesearch():
     query = "select * from MultipleChoiceQuestion where QQuestion LIKE '%{}%' order by QNo".format(searchbox)
     cursor.execute(query)
     result = cursor.fetchall()
-    print(jsonify(result).json)
     return jsonify(result)
 
 if __name__ == "__main__":

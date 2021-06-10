@@ -1,29 +1,54 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+
 </head>
 <body>
-    <input type="text" id = "livebox">
-    <p id = "datalist"></p>
+    <input type="text" style="display:block;margin: 50px auto auto;left: 0;right: 0;" id = "livebox">
+    <table style="margin-top: 20px" data-toggle="table">
+      <thead>
+        <tr>
+          <th>QID</th>
+          <th>Question</th>
+          <th>Answer</th>
+        </tr>
+      </thead>
+      <tbody id="datatable">
+      </tbody>
+    </table>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>
 </body>
 <script>
     $(document).ready(function(){
         $("#livebox").on("input",function(e){
-            $("#datalist").empty();
-            $.ajax({
-                method:"post",
-                url:"/livesearch",
-                data:{text:$("#livebox").val()},
-                success:function(res){
-                    var data = "<ul>";
-                    $.each(res,function(index,value){
-                        data += "<li>"+res[index]+"</li>";
-                    });
-                    data += "</ul>";
-                    $("#datalist").html(data);
-                }
-            });
+            if($("#livebox").val()==""){
+                $("#datatable").empty();
+            }else {
+                $("#datatable").empty();
+                $.ajax({
+                    method: "post",
+                    url: "/livesearch",
+                    data: {text: $("#livebox").val()},
+                    success: function (res) {
+                        data = ""
+                        $.each(res, function (index, value) {
+                            data += "<tr>";
+                            data += "<td>" + res[index][0] + "</td>";
+                            data += "<td>" + res[index][1] + "</td>";
+                            data += "<td>" + res[index][2] + "</td>";
+                            data += "</tr>";
+                        });
+                        $("#datatable").html(data);
+                    }
+                });
+            }
         });
     });
 </script>
