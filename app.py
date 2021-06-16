@@ -3,29 +3,42 @@
  @Author: loyio
  @Date: 6/10/21
 """
-from flask import Flask,render_template,request,jsonify
-from flask_mysqldb import MySQL
-app = Flask(__name__)
-mysql = MySQL(app)
+from flask import Flask, render_template, request, jsonify
+import pymysql
 
-#Enter here your database informations
-app.config["MYSQL_HOST"] = "127.0.0.1"
-app.config["MYSQL_USER"] = "root"
-app.config["MYSQL_PASSWORD"] = "123456"
-app.config["MYSQL_DB"] = "python_quiz_db"
-app.config["MYSQL_CURSORCLASS"] = ""
+app = Flask(__name__)
+
+# Enter here your database informations
+
+conn = pymysql.connect(host='localhost',
+                       user='root',
+                       password='123456',
+                       database='python_quiz_db',
+                       charset='utf8mb4',
+                       cursorclass=pymysql.cursors.DictCursor)
+
 
 @app.route("/")
 def index():
     return render_template("index.html")
-@app.route("/livesearch",methods=["POST","GET"])
+
+
+@app.route("/livesearch", methods=["POST", "GET"])
 def livesearch():
-    searchbox = request.form.get("text")
-    cursor = mysql.connection.cursor()
-    query = "select * from MultipleChoiceQuestion where QQuestion LIKE '%{}%' order by QNo".format(searchbox)
-    cursor.execute(query)
-    result = cursor.fetchall()
-    return jsonify(result)
+    searchtext = request.form.get("text")
+    cursor = conn.cursor()
+    sql = "select * from MultipleChoiceQuestion where QQuestion LIKE '%"+searchtext+"%' order by QNo"
+    try:
+        res = [int(cursor.execute(sql))]
+        if res[0] == 0:
+            res.append("error")
+        else:
+            res.append(cursor.fetchall())
+    except Exception as e:
+            res = [0, "error"]
+    print(res[1])
+    return jsonify(res[1])
+
 
 if __name__ == "__main__":
     app.run(debug=True)

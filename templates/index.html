@@ -40,9 +40,9 @@
                         data = ""
                         $.each(res, function (index, value) {
                             data += "<tr>";
-                            data += "<td>" + res[index][0] + "</td>";
-                            data += "<td>" + res[index][1] + "</td>";
-                            data += "<td>" + res[index][2] + "</td>";
+                            data += "<td>" + res[index]["QNo"] + "</td>";
+                            data += "<td>" + res[index]["QQuestion"] + "</td>";
+                            data += "<td>" + res[index]["QAnswer"] + "</td>";
                             data += "</tr>";
                         });
                         $("#datatable").html(data);
